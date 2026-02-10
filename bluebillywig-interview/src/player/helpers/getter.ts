@@ -1,11 +1,10 @@
-
 export class PlayerGetters {
   constructor(private wrapper: PlayerAPIWrapper) {}
 
-// -----------------------
-// Getters
-// -----------------------
-  
+  // -----------------------
+  // Getters
+  // -----------------------
+
   getLocalStorageItem(key: string): any {
     try {
       return this.player.getLocalStorageItem(key);
@@ -149,5 +148,4 @@ export class PlayerGetters {
       return null;
     }
   }
-
 }

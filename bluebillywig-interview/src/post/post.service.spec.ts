@@ -1,12 +1,17 @@
+import axios from 'axios';
+import { PostService } from './post.service';
+
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostsService } from './post.service';
 import { HttpService } from '@nestjs/axios';
-import { of, throwError } from 'rxjs';
-import { NotFoundException } from '@nestjs/common';
+import { describe, beforeEach, afterEach, it } from 'node:test';
+import MockAdapter from 'axios-mock-adapter';
+import { PostNotFoundError } from 'src/error/post-not-found.error';
+import { TimeoutError } from 'src/error/unknown.error';
+import { PostNetworkError } from 'src/error/network.error';
 
 describe('PostsService', () => {
-  let service: PostsService;
-  let httpService: HttpService;
+  let service: PostService;
+  let mock: MockAdapter;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,26 +28,51 @@ describe('PostsService', () => {
 
     service = module.get(PostsService);
     httpService = module.get(HttpService);
+    mock = new MockAdapter(axios);
   });
 
-  it('returns a post when API returns valid data', async () => {
-    jest
-      .spyOn(httpService, 'get')
-      .mockReturnValue(of({ data: { id: 1, title: 'test', body: 'body', userId: 1 } } as any));
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it('returns post when API succeeds', async () => {
+    mock.onGet(/\/posts\/1$/).reply(200, {
+      userId: 1,
+      id: 1,
+      title: 'Test',
+      body: 'Body',
+    });
 
     const result = await service.getPostById(1);
     expect(result.id).toBe(1);
   });
 
-  it('throws NotFoundException when API returns empty object', async () => {
-    jest.spyOn(httpService, 'get').mockReturnValue(of({ data: {} } as any));
+    it('throws PostNotFoundError with correct postId on 404', async () => {
+    mock.onGet(/\/posts\/999$/).reply(404);
 
-    await expect(service.getPostById(1)).rejects.toThrow(NotFoundException);
+    await expect(service.getPostById(999)).rejects.toBeInstanceOf(
+      PostNotFoundError
+    );
+
+    await expect(service.getPostById(999)).rejects.toThrow(
+      'Post with id 999 not found'
+    );
   });
 
-  it('throws NotFoundException when request fails', async () => {
-    jest.spyOn(httpService, 'get').mockReturnValue(throwError(() => new Error('Network error')));
+  it('throws NetworkError on network error', async () => {
+    mock.onGet(/\/posts\/1$/).networkError();
 
-    await expect(service.getPostById(1)).rejects.toThrow(NotFoundException);
+    await expect(service.getPostById(1)).rejects.toBeInstanceOf(
+      PostNetworkError
+    );
   });
+
+  it('throws TimeoutError on timeout', async () => {
+    mock.onGet(/\/posts\/1$/).timeout();
+
+    await expect(service.getPostById(1)).rejects.toBeInstanceOf(
+      TimeoutError
+    );
+  });
+
 });
