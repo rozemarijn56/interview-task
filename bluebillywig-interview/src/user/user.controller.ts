@@ -1,24 +1,26 @@
-import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Param, ParseIntPipe, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import type { WatchEventPayload } from '../shared/types';
+import { WatchEventDto } from './dto/watch-event.dto';
 
 @Controller('user')
 export class UserController {
-      constructor(private readonly users: UserService) {}
+  constructor(private readonly users: UserService) {}
 
-  @Post('/:id/watched40')
+  @Post(':id/watched-40')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async watched40(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: WatchEventPayload,
-  ) {
-    return this.users.updateWatched40(id, payload);
+    @Body() payload: WatchEventDto,
+  ): Promise<void> {
+    await this.users.updateWatched40(id, payload);
   }
 
-  @Post('/:id/finished')
+  @Post(':id/finished')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async finished(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: WatchEventPayload,
-  ) {
-    return this.users.updateFinished(id, payload);
+    @Body() payload: WatchEventDto,
+  ): Promise<void> {
+    await this.users.updateFinished(id, payload);
   }
 }
