@@ -1,4 +1,5 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
+
 
 export class WatchEventDto {
   @IsNumber()
@@ -6,6 +7,9 @@ export class WatchEventDto {
 
   @IsString()
   mediaclipId: string;
+
+  @IsString
+  event: string;
 
   @IsString()
   timestamp: string;

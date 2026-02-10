@@ -6,8 +6,8 @@ import { HttpService } from '@nestjs/axios';
 import { describe, beforeEach, afterEach, it } from 'node:test';
 import MockAdapter from 'axios-mock-adapter';
 import { PostNotFoundError } from 'src/error/post-not-found.error';
-import { TimeoutError } from 'src/error/unknown.error';
-import { PostNetworkError } from 'src/error/network.error';
+import { NetworkError } from 'src/error/network.error';
+import { TimeoutError } from 'src/error/time-out.error';
 
 describe('PostsService', () => {
   let service: PostService;
@@ -16,7 +16,7 @@ describe('PostsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PostsService,
+        PostService,
         {
           provide: HttpService,
           useValue: {
@@ -26,7 +26,7 @@ describe('PostsService', () => {
       ],
     }).compile();
 
-    service = module.get(PostsService);
+    service = module.get(PostService);
     httpService = module.get(HttpService);
     mock = new MockAdapter(axios);
   });
@@ -63,7 +63,7 @@ describe('PostsService', () => {
     mock.onGet(/\/posts\/1$/).networkError();
 
     await expect(service.getPostById(1)).rejects.toBeInstanceOf(
-      PostNetworkError
+      NetworkError
     );
   });
 

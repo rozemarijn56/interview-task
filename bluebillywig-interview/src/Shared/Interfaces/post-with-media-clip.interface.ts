@@ -1,4 +1,5 @@
-import { Post } from "src/post/post.types";
+import { Post } from "./post-interface";
+
 
 export interface PostWithMediaClip extends Post {
   mediaClipId: string;

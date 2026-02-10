@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Post } from './post.types';
 import dotenv from 'dotenv';
-import { catchAxiosErrors, PostNotFoundError } from '../../error/catchAxiosErrors';
+import { handleAxiosCall } from 'src/error/catch-axios-errors';
+import { Post } from 'src/Shared/Interfaces/post-interface';
 
 
 dotenv.config(); // laad .env
@@ -18,5 +18,4 @@ export class PostsClient {
         );
     }
 }
-
 

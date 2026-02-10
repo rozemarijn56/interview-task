@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import dotenv from 'dotenv';
-import { Post } from './mediaclip/post-mediaclip.service';
-import { handleax}
+import { handleAxiosCall } from 'src/error/catch-axios-errors';
+import { Post } from 'src/Shared/Interfaces/post-interface';
+
 dotenv.config();
 
 const BASE_URL =

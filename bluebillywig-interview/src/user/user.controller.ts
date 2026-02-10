@@ -1,6 +1,6 @@
 import { Body, Controller, Param, ParseIntPipe, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import { WatchEventDto } from './dto/watch-event.dto';
+import { WatchEventDto } from 'src/Shared/watch.dto';
 
 @Controller('user')
 export class UserController {

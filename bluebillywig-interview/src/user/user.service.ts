@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { WatchEventDto } from './dto/watch-event.dto';
 import type { AxiosResponse } from 'axios';
-import User from 'User.interface';
+import { WatchEventDto } from 'src/Shared/watch.dto';
+import { User } from 'src/Shared/Interfaces/User.interface';
 
 @Injectable()
 export class UserService {
